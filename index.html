@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Josh Sack — Spatial Demo Portfolio</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,600..900,70,1&family=Manrope:wght@400;600;800;900&family=Syne:wght@700;800&display=swap');
+
+    :root{
+      --ink:#211723;
+      --muted:#766071;
+      --paper:#fff2de;
+      --clay:#ffbea9;
+      --rose:#ff6f91;
+      --violet:#9d8cff;
+      --cyan:#7fe5ff;
+      --mint:#a9f4c8;
+      --neo:#dfe7ef;
+      --neo-ink:#243041;
+      --shadow:rgba(104,52,84,.18);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      min-height:100vh;
+      overflow:hidden;
+      color:var(--ink);
+      font-family:Manrope,system-ui,sans-serif;
+      background:
+        radial-gradient(circle at 11% 13%, #fff9cb 0 10%, transparent 26%),
+        radial-gradient(circle at 88% 11%, #d7c3ff 0 12%, transparent 30%),
+        radial-gradient(circle at 86% 86%, #a9ecff 0 10%, transparent 32%),
+        linear-gradient(135deg,#ffd5ad 0%,#ffe0ea 48%,#d9f4ff 100%);
+      perspective:1600px;
+    }
+    body.neo-mode{
+      background:
+        radial-gradient(circle at 18% 18%,#f8fbff 0 10%,transparent 25%),
+        radial-gradient(circle at 82% 84%,#c7d5e4 0 12%,transparent 32%),
+        linear-gradient(145deg,#edf2f7,#cad4df);
+      color:var(--neo-ink);
+    }
+
+    .grain,.gridlines{position:fixed;inset:0;pointer-events:none}
+    .grain{opacity:.14;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.84' numOctaves='3'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E")}
+    .gridlines{opacity:.18;background-image:linear-gradient(90deg,rgba(255,255,255,.42) 1px,transparent 1px),linear-gradient(rgba(255,255,255,.36) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(circle at center,#000,transparent 74%)}
+
+    .app{
+      width:min(1380px,94vw);
+      height:min(820px,91vh);
+      margin:4.5vh auto;
+      position:relative;
+      transform-style:preserve-3d;
+      transition:transform .25s ease;
+    }
+
+    .topbar{
+      position:absolute;left:0;right:0;top:0;height:82px;
+      display:flex;align-items:center;justify-content:space-between;
+      transform:translateZ(150px);
+      z-index:5;
+    }
+    .brand{display:flex;align-items:center;gap:14px;font-weight:900}
+    .mark{width:50px;height:50px;border-radius:18px;background:radial-gradient(circle at 28% 24%,#fff5c6 0 12%,#ff6f91 34%,#8f83ff 78%);box-shadow:inset 7px 8px 14px rgba(255,255,255,.46),0 14px 30px rgba(113,55,92,.22)}
+    body.neo-mode .mark{border-radius:50%;background:linear-gradient(145deg,#f8fbff,#b9c5d2);box-shadow:12px 12px 22px rgba(151,164,181,.75),-12px -12px 22px #fff,inset 7px 7px 12px rgba(255,255,255,.65),inset -8px -8px 14px rgba(99,115,135,.18)}
+    .brand small{display:block;text-transform:uppercase;letter-spacing:.2em;color:var(--muted);font-size:10px}.brand b{font-family:Fraunces,serif;font-size:24px;letter-spacing:-.04em}
+    body.neo-mode .brand b{font-family:Syne,sans-serif}
+    .actions{display:flex;gap:12px}.pill{border:0;text-decoration:none;border-radius:999px;padding:12px 16px;background:rgba(255,255,255,.36);color:#65465e;font-weight:900;box-shadow:inset 6px 7px 12px rgba(255,255,255,.52),0 12px 28px rgba(92,48,76,.12);cursor:pointer}.pill:hover{transform:translateY(-2px)}
+    body.neo-mode .pill{background:var(--neo);color:#536276;box-shadow:9px 9px 18px #b9c3cf,-9px -9px 18px #fff}
+
+    .intro{
+      position:absolute;left:0;top:120px;width:430px;transform:translateZ(110px);z-index:4;
+    }
+    .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.22em;font-weight:900;color:#7b5771} body.neo-mode .eyebrow{color:#748293}
+    h1{font-family:Fraunces,serif;font-size:clamp(54px,6.4vw,94px);line-height:.86;letter-spacing:-.075em;margin:15px 0 22px} body.neo-mode h1{font-family:Syne,sans-serif;letter-spacing:-.07em}
+    .intro p{font-size:17px;line-height:1.55;color:#665466;font-weight:700;margin:0 0 26px} body.neo-mode .intro p{color:#657386}
+
+    .stage{
+      position:absolute;inset:90px 0 0 420px;
+      transform-style:preserve-3d;
+    }
+
+    .orbit{
+      position:absolute;left:50%;top:50%;width:620px;height:620px;margin:-310px 0 0 -310px;border-radius:50%;
+      transform-style:preserve-3d;
+      border:1px solid rgba(255,255,255,.35);
+      box-shadow:inset 18px 18px 34px rgba(126,70,88,.08),inset -18px -18px 34px rgba(255,255,255,.34);
+      animation:slowOrbit 28s linear infinite;
+    }
+    body.neo-mode .orbit{border-color:rgba(91,107,127,.15);box-shadow:inset 14px 14px 24px rgba(154,168,185,.48),inset -14px -14px 24px rgba(255,255,255,.86)}
+    @keyframes slowOrbit{to{transform:rotateZ(360deg)}}
+    .orbit.o2{width:440px;height:440px;margin:-220px 0 0 -220px;animation-duration:19s;animation-direction:reverse;transform:translateZ(-80px)}
+    .orbit.o3{width:800px;height:800px;margin:-400px 0 0 -400px;animation-duration:38s;opacity:.55;transform:translateZ(-140px)}
+    .sat{position:absolute;width:18px;height:18px;border-radius:50%;background:var(--cyan);box-shadow:0 0 26px var(--cyan)}
+    .sat.a{left:50%;top:-9px}.sat.b{right:-9px;top:50%;background:var(--mint);box-shadow:0 0 26px var(--mint)}.sat.c{left:13%;bottom:11%;background:var(--rose);box-shadow:0 0 26px var(--rose)}
+
+    .piece{
+      position:absolute;
+      width:390px;min-height:500px;
+      border:0;
+      text-align:left;
+      cursor:pointer;
+      color:inherit;
+      padding:28px;
+      transform-style:preserve-3d;
+      transition:transform .65s cubic-bezier(.16,1,.3,1), filter .45s ease, opacity .45s ease;
+      will-change:transform;
+    }
+    .piece[data-piece="clay"]{
+      left:40px;top:88px;border-radius:46px;background:linear-gradient(145deg,rgba(255,244,222,.94),rgba(255,188,173,.88));
+      box-shadow:22px 30px 58px rgba(121,63,91,.22),inset 10px 10px 18px rgba(255,255,255,.58),inset -12px -14px 24px rgba(137,69,89,.16);
+      transform:translate3d(0,0,160px) rotateY(-13deg) rotateX(4deg);
+    }
+    .piece[data-piece="neo"]{
+      right:54px;top:142px;border-radius:44px;background:#dfe7ef;color:#263243;
+      box-shadow:24px 24px 48px rgba(151,164,181,.75),-20px -20px 44px rgba(255,255,255,.88),inset 1px 1px 0 rgba(255,255,255,.8);
+      transform:translate3d(0,0,40px) rotateY(15deg) rotateX(-2deg);
+    }
+    .piece.inactive{filter:saturate(.78) blur(.15px);opacity:.72;transform:translate3d(0,18px,-60px) rotateY(0deg) scale(.92)}
+    .piece.active{z-index:4;filter:none;opacity:1;transform:translate3d(0,-18px,240px) rotateY(0deg) rotateX(0deg) scale(1.04)}
+    .piece:hover{filter:saturate(1.08);}
+
+    .badge{display:inline-flex;padding:9px 12px;border-radius:999px;background:rgba(255,255,255,.38);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:900;color:#6b4963;box-shadow:inset 5px 6px 11px rgba(255,255,255,.5),inset -5px -6px 12px rgba(113,63,83,.08)}
+    .neo .badge{background:#dfe7ef;color:#536276;box-shadow:inset 7px 7px 12px rgba(154,168,185,.58),inset -7px -7px 12px #fff}
+    .piece h2{font-family:Fraunces,serif;font-size:46px;line-height:.94;letter-spacing:-.055em;margin:44px 0 16px}.neo h2{font-family:Syne,sans-serif;color:#273445}
+    .piece p{font-size:15px;line-height:1.52;color:#71586b;font-weight:700;margin:0}.neo p{color:#657386}
+    .preview{height:150px;border-radius:34px;margin:26px 0;background:rgba(255,255,255,.28);position:relative;overflow:hidden;box-shadow:inset 7px 8px 16px rgba(255,255,255,.42),inset -8px -9px 16px rgba(117,67,87,.11)}
+    .neo .preview{background:#dfe7ef;box-shadow:inset 10px 10px 18px rgba(154,168,185,.62),inset -10px -10px 18px #fff}
+    .blob{position:absolute;border-radius:50%;background:radial-gradient(circle at 35% 28%,#fff8c9,#ff7194 30%,#9a87ff 70%,#85e5ff);box-shadow:inset 14px 15px 26px rgba(255,255,255,.42),inset -16px -18px 28px rgba(54,40,113,.2)}
+    .blob.one{width:118px;height:118px;left:26px;top:20px;animation:bob 4s ease-in-out infinite alternate}.blob.two{width:84px;height:84px;right:34px;bottom:24px;animation:bob 3.2s ease-in-out infinite alternate-reverse}@keyframes bob{to{transform:translateY(-16px) rotate(9deg)}}
+    .neo-rings{position:absolute;inset:20px;border-radius:50%;border:1px solid rgba(84,102,124,.18);animation:spin 8s linear infinite}.neo-rings:before,.neo-rings:after{content:"";position:absolute;border-radius:50%;background:#dfe7ef;box-shadow:8px 8px 14px rgba(151,164,181,.68),-8px -8px 14px #fff}.neo-rings:before{width:44px;height:44px;top:-22px;left:50%}.neo-rings:after{width:34px;height:34px;right:-17px;top:50%}@keyframes spin{to{transform:rotate(360deg)}}
+
+    .panel{
+      position:absolute;left:78px;bottom:40px;width:760px;display:grid;grid-template-columns:1.1fr .9fr;gap:18px;transform:translateZ(210px);z-index:6;
+    }
+    .detail,.controls{border-radius:34px;padding:22px;background:rgba(255,244,224,.75);box-shadow:14px 18px 36px rgba(114,58,86,.16),inset 8px 9px 17px rgba(255,255,255,.58),inset -9px -11px 19px rgba(131,71,91,.1)}
+    body.neo-mode .detail,body.neo-mode .controls{background:#dfe7ef;box-shadow:16px 16px 30px rgba(151,164,181,.75),-16px -16px 30px #fff;color:#263243}
+    .detail small{font-weight:900;color:#79566d;letter-spacing:.15em;text-transform:uppercase}.detail h3{margin:8px 0 8px;font-family:Fraunces,serif;font-size:28px;letter-spacing:-.04em}body.neo-mode .detail h3{font-family:Syne,sans-serif}.detail p{margin:0;color:#6b5668;font-weight:700;font-size:14px;line-height:1.45}body.neo-mode .detail p{color:#657386}
+    .controls{display:flex;align-items:center;gap:12px;justify-content:flex-end}.launch{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border-radius:22px;padding:15px 18px;background:#241929;color:white;font-weight:900;box-shadow:0 16px 28px rgba(34,23,39,.22),inset 4px 5px 10px rgba(255,255,255,.13)}body.neo-mode .launch{background:#263242;color:#e9f3ff}.switch{border:0;border-radius:22px;padding:15px 18px;background:rgba(255,255,255,.36);font-weight:900;color:#61445a;cursor:pointer}body.neo-mode .switch{background:#dfe7ef;color:#536276;box-shadow:9px 9px 16px #b9c3cf,-9px -9px 16px #fff}
+
+    .depth-label{position:absolute;right:28px;bottom:22px;color:#7a6174;font-size:12px;font-weight:900;opacity:.72}
+    body.neo-mode .depth-label{color:#697789}
+
+    @media(max-width:1000px){body{overflow:auto}.app{height:auto;margin:0 auto;padding:24px 0}.topbar,.intro,.stage,.panel{position:relative;inset:auto;left:auto;right:auto;top:auto;bottom:auto;width:auto}.topbar{height:auto;margin-bottom:28px}.stage{display:flex;flex-direction:column;gap:22px;transform:none}.intro{margin-bottom:24px}.piece,.piece[data-piece="clay"],.piece[data-piece="neo"],.piece.active,.piece.inactive{position:relative;left:auto;right:auto;top:auto;width:100%;transform:none!important;opacity:1;filter:none}.orbit{display:none}.panel{display:flex;flex-direction:column;transform:none;margin-top:22px}.actions{display:none}body{overflow:auto}h1{font-size:54px}}
+  </style>
+</head>
+<body>
+  <div class="grain"></div><div class="gridlines"></div>
+  <main class="app" id="app">
+    <nav class="topbar">
+      <div class="brand"><div class="mark"></div><div><small>Josh Sack / Demo Portfolio</small><b>Interactive spatial selector</b></div></div>
+      <div class="actions"><a class="pill" href="https://github.com/ZombieDuckling/demo-portfolio">GitHub</a><button class="pill" id="reset">Reset view</button></div>
+    </nav>
+
+    <section class="intro">
+      <div class="eyebrow">Choose a portfolio piece</div>
+      <h1>Spatial UI, not a flat gallery.</h1>
+      <p>Two portfolio pieces live as separate objects in depth. Select a piece to pull it forward, change the scene material, update the control deck, then launch the full demo.</p>
+    </section>
+
+    <section class="stage" id="stage" aria-label="Interactive portfolio pieces">
+      <div class="orbit o3"><i class="sat a"></i><i class="sat b"></i><i class="sat c"></i></div>
+      <div class="orbit"><i class="sat a"></i><i class="sat b"></i><i class="sat c"></i></div>
+      <div class="orbit o2"><i class="sat a"></i><i class="sat b"></i><i class="sat c"></i></div>
+
+      <button class="piece clay active" data-piece="clay" aria-pressed="true">
+        <span class="badge">Piece 01 / sellable tactile</span>
+        <h2>Claymorphic Spatial UI</h2>
+        <p>Warm inflated controls, candy gradients, squishy depth, and commercial product copy.</p>
+        <div class="preview"><i class="blob one"></i><i class="blob two"></i></div>
+      </button>
+
+      <button class="piece neo inactive" data-piece="neo" aria-pressed="false">
+        <span class="badge">Piece 02 / orbital precision</span>
+        <h2>Neumorphic Orbital UI</h2>
+        <p>Cool matte surface language, inset controls, rotating modules, and technical calm.</p>
+        <div class="preview"><i class="neo-rings"></i></div>
+      </button>
+    </section>
+
+    <aside class="panel" aria-live="polite">
+      <div class="detail" id="detail">
+        <small>Selected piece</small>
+        <h3>Claymorphic Spatial UI</h3>
+        <p>Tactile, friendly, deck-ready direction for AI copilots, onboarding systems, creative tools, and warm SaaS demos.</p>
+      </div>
+      <div class="controls">
+        <button class="switch" id="prev">Previous</button>
+        <button class="switch" id="next">Next</button>
+        <a class="launch" id="launch" href="demos/claymorphic-spatial-ui.html">Open selected demo →</a>
+      </div>
+    </aside>
+    <div class="depth-label">Move cursor for camera parallax • click a portfolio object to select</div>
+  </main>
+
+  <script>
+    const app = document.getElementById('app');
+    const pieces = [...document.querySelectorAll('.piece')];
+    const detail = document.getElementById('detail');
+    const launch = document.getElementById('launch');
+    const data = {
+      clay: {
+        title:'Claymorphic Spatial UI',
+        body:'Tactile, friendly, deck-ready direction for AI copilots, onboarding systems, creative tools, and warm SaaS demos.',
+        href:'demos/claymorphic-spatial-ui.html',
+        mode:'clay'
+      },
+      neo: {
+        title:'Neumorphic Orbital UI',
+        body:'A different spatial language: cool monochrome material, inset controls, rotating orbital elements, and precision dashboard energy.',
+        href:'demos/neumorphic-orbital-ui.html',
+        mode:'neo'
+      }
+    };
+    let selected = 'clay';
+
+    function select(id){
+      selected = id;
+      document.body.classList.toggle('neo-mode', id === 'neo');
+      for(const p of pieces){
+        const active = p.dataset.piece === id;
+        p.classList.toggle('active', active);
+        p.classList.toggle('inactive', !active);
+        p.setAttribute('aria-pressed', String(active));
+      }
+      detail.innerHTML = `<small>Selected piece</small><h3>${data[id].title}</h3><p>${data[id].body}</p>`;
+      launch.href = data[id].href;
+      launch.textContent = 'Open selected demo →';
+    }
+
+    pieces.forEach(p => p.addEventListener('click', () => select(p.dataset.piece)));
+    document.getElementById('next').addEventListener('click', () => select(selected === 'clay' ? 'neo' : 'clay'));
+    document.getElementById('prev').addEventListener('click', () => select(selected === 'clay' ? 'neo' : 'clay'));
+    document.getElementById('reset').addEventListener('click', () => select('clay'));
+
+    let raf;
+    document.addEventListener('pointermove', (e) => {
+      if(innerWidth < 1000) return;
+      if(raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const x = (e.clientX / innerWidth - .5);
+        const y = (e.clientY / innerHeight - .5);
+        app.style.transform = `rotateX(${y * -7}deg) rotateY(${x * 9}deg)`;
+        pieces.forEach((p, i) => {
+          const strength = p.classList.contains('active') ? 22 : 12;
+          p.style.setProperty('--mx', `${x * strength}px`);
+          p.style.setProperty('--my', `${y * strength}px`);
+          p.style.translate = `${x * strength * (i ? -1 : 1)}px ${y * strength}px`;
+        });
+      });
+    });
+    document.addEventListener('pointerleave', () => {
+      app.style.transform = '';
+      pieces.forEach(p => p.style.translate = '');
+    });
+  </script>
+</body>
+</html>
