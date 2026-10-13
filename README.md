@@ -14,3 +14,13 @@ python3 -m http.server 8080
 ```
 
 Then open `http://localhost:8080`.
+
+## Validation
+
+Run the no-dependency static smoke test before publishing changes:
+
+```bash
+python3 scripts/validate_static.py
+```
+
+The check parses every HTML file, verifies basic document metadata, and ensures local portfolio links resolve.
